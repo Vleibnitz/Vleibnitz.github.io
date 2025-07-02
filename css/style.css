@@ -65,7 +65,10 @@ button {
     color: var(--text-color) !important;
   }
 }
-
+.no-hover button:hover {
+  background: none !important;
+  color: var(--text-color) !important;
+}
 
 button:focus {
   outline: none;

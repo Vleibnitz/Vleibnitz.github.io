@@ -1,3 +1,11 @@
+// ─── DISABLE HOVER ON FIRST TOUCH ─────────────────────────────────────────
+function disableHoverOnTouch() {
+  document.documentElement.classList.add('no-hover');
+  window.removeEventListener('touchstart', disableHoverOnTouch);
+}
+window.addEventListener('touchstart', disableHoverOnTouch, { passive: true });
+
+// ─── LANGUAGE TOGGLE LOGIC ─────────────────────────────────────────────────
 const content = {
   en: {
     bio: "Physics student at ETH Zurich.",
@@ -33,17 +41,14 @@ function toggleLanguage() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 1) mount click handler
   const toggleBtn = document.getElementById("lang-toggle");
   toggleBtn.addEventListener("click", toggleLanguage);
 
-  // 2) initialize from localStorage (or default to English)
   const saved = localStorage.getItem("language") || "en";
   setLang(saved);
   updateLangToggleButton(saved);
 
-  // ─── BLUR ON TAP ─────────────────────────────────────────────────────────────
-  // ensure the toggle button never sticks in its tapped or focused state
+  // blur on tap to remove focus styles
   [toggleBtn].forEach(btn => {
     btn.addEventListener('click', () => btn.blur());
     btn.addEventListener('touchend', () => btn.blur());
