@@ -1,19 +1,21 @@
+/* style.css */
+
 :root {
   color-scheme: light dark;
-  --bg-color:  #ffffff;
+  --bg-color:   #ffffff;
   --text-color: #1a1a1a;
   --accent:     #0066cc;
   --max-width:  600px;
 }
 
-/* Dark-mode overrides */
 html[data-theme="dark"] {
   color-scheme: dark;
-  --bg-color:  #121212;
+  --bg-color:   #121212;
   --text-color: #f0f0f0;
   --accent:     #3399ff;
 }
 
+/* Reset */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -22,68 +24,57 @@ html[data-theme="dark"] {
 
 body {
   background-color: var(--bg-color);
-  color: var(--text-color);
-  font-family: 'Segoe UI', Tahoma, sans-serif;
-  line-height: 1.5;
-  padding-top: 6rem;
-  position: relative;
-  transition: background-color 0.3s, color 0.3s;
+  color:            var(--text-color);
+  font-family:      'Segoe UI', Tahoma, sans-serif;
+  line-height:      1.5;
+  padding:          6rem 1rem 1rem; /* always keep content below controls + 1rem sides */
+  transition:       background-color 0.3s, color 0.3s;
+  position:         relative;
 }
 
 .controls {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  right: 1rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  position:    absolute;
+  top:         1rem;
+  left:        1rem;
+  right:       1rem;
+  display:     flex;
+  flex-wrap:   wrap;
+  gap:         0.5rem;
 }
 
-button {
-  background: none;
-  border: 1px solid var(--text-color);
-  color: var(--text-color);
-  padding: 0.4rem 0.8rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  touch-action: manipulation;
-  -webkit-touch-callout: none;
+.controls button {
+  flex:                0 1 auto;            /* size to content, wrap if needed */
+  background:          none;
+  border:              1px solid var(--text-color);
+  color:               var(--text-color);
+  padding:             0.4rem 0.8rem;
+  border-radius:       4px;
+  cursor:              pointer;
+  transition:          background 0.2s, color 0.2s;
+  touch-action:        manipulation;
   -webkit-tap-highlight-color: transparent;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  button:hover {
-    background: var(--accent);
-    color: #fff;
-  }
-}
-@media (hover: none) {
-  button:hover {
-    background: none !important;
-    color: var(--text-color) !important;
-  }
-}
-.no-hover button:hover {
-  background: none !important;
-  color: var(--text-color) !important;
 }
 
 button:focus {
   outline: none;
 }
 
-/* ensure buttons always revert after tap */
-button:active {
+/* only non-touch can hover */
+html:not(.touch) .controls button:hover {
+  background: var(--accent);
+  color:      #fff;
+}
+
+/* active/tap flash resets immediately */
+.controls button:active {
   background: none !important;
-  color: var(--text-color) !important;
+  color:      var(--text-color) !important;
 }
 
 .container {
-  width: 100%;
-  max-width: var(--max-width);
-  margin: 0 auto;
+  width:      100%;
+  max-width:  var(--max-width);
+  margin:     0 auto;
   text-align: center;
 }
 
@@ -93,17 +84,16 @@ button:active {
 }
 
 .links a {
-  color: var(--accent);
+  color:           var(--accent);
   text-decoration: none;
-  font-weight: bold;
+  font-weight:     bold;
 }
 
 .links a:hover {
   text-decoration: underline;
 }
 
-
-
+/* respect OS dark-mode if no explicit toggle */
 @media (prefers-color-scheme: dark) {
   :root {
     --bg-color:   #121212;
