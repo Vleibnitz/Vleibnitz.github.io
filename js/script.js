@@ -1,19 +1,43 @@
-// js/script.js (or wherever you put your JS)
+
 const content = {
-  en: { bio: "Physics student at ETH Zurich." },
-  de: { bio: "Physikstudent an der ETH Zürich." }
+  en: {
+    bio: "Physics student at ETH Zurich.",
+    emailLabel: "Email",
+    email: "vitus@leibni.tz"
+  },
+  de: {
+    bio: "Physikstudent an der ETH Zürich.",
+    emailLabel: "E-Mail",
+    email: "vitus@leibni.tz"
+  }
 };
 
 function updateLangToggleButton(lang) {
-  // when in English show "Deutsch" so user can switch to German, etc.
+
   document.getElementById("lang-toggle").textContent =
     lang === "en" ? "Deutsch" : "English";
 }
 
 function setLang(lang) {
-  document.getElementById("bio").textContent = content[lang].bio;
+  const data = content[lang];
+
+ 
+  document.getElementById("bio").textContent = data.bio;
+
+ 
+  const emailLink = document.getElementById("email-link");
+
+  
+  emailLink.textContent = data.emailLabel;
+
+
+  emailLink.href = "mailto:vitus@leibni.tz";
+
+  
   localStorage.setItem("language", lang);
 }
+
+
 
 function toggleLanguage() {
   const current = localStorage.getItem("language") || "en";
