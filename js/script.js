@@ -1,19 +1,13 @@
-
-
+// js/script.js (or wherever you put your JS)
 const content = {
-  en: {
-    bio: "Physics student at ETH Zurich.",
-
-  },
-  de: {
-    bio: "Physikstudent an der ETH Zürich.",
-  
-  }
+  en: { bio: "Physics student at ETH Zurich." },
+  de: { bio: "Physikstudent an der ETH Zürich." }
 };
 
 function updateLangToggleButton(lang) {
-  const btn = document.getElementById("lang-toggle");
-  btn.textContent = lang === "en" ? "Deutsch" : "English";
+  // when in English show "Deutsch" so user can switch to German, etc.
+  document.getElementById("lang-toggle").textContent =
+    lang === "en" ? "Deutsch" : "English";
 }
 
 function setLang(lang) {
@@ -21,37 +15,20 @@ function setLang(lang) {
   localStorage.setItem("language", lang);
 }
 
-function toggleTheme() {
-  const html = document.documentElement;
-  const current = html.getAttribute("data-theme");
-  const next = current === "dark" ? "light" : "dark";
-  html.setAttribute("data-theme", next);
-  localStorage.setItem("theme", next);
+function toggleLanguage() {
+  const current = localStorage.getItem("language") || "en";
+  const next = current === "en" ? "de" : "en";
+  setLang(next);
+  updateLangToggleButton(next);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Automatic dark-mode detection
-  const storedTheme = localStorage.getItem("theme");
-  if (storedTheme) {
-    document.documentElement.setAttribute("data-theme", storedTheme);
-  } else {
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    document.documentElement.setAttribute("data-theme", prefersDark ? "dark" : "light");
-  }
+  // 1) mount click handler
+  document.getElementById("lang-toggle")
+    .addEventListener("click", toggleLanguage);
 
-  const langBtn = document.getElementById("lang-toggle");
-  if (langBtn) {
-    langBtn.addEventListener("click", () => {
-      const currentLang = localStorage.getItem("language") || "en";
-      const nextLang = currentLang === "en" ? "de" : "en";
-      setLang(nextLang);
-      updateLangToggleButton(nextLang);
-    });
-  }
-
-  const savedLang = localStorage.getItem("language") || "en";
-  setLang(savedLang);
-  if (document.getElementById("lang-toggle")) {
-    updateLangToggleButton(savedLang);
-  }
+  // 2) initialize from localStorage (or default to English)
+  const saved = localStorage.getItem("language") || "en";
+  setLang(saved);
+  updateLangToggleButton(saved);
 });
