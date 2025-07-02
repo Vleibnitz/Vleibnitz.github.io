@@ -22,20 +22,19 @@ body {
   color: var(--text-color);
   font-family: 'Segoe UI', Tahoma, sans-serif;
   line-height: 1.5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem;
+  padding-top: 6rem;
+  position: relative;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .controls {
-  width: 100%;
-  max-width: var(--max-width);
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  flex-wrap: wrap;
   display: flex;
-  justify-content: flex-end;
   gap: 0.5rem;
-  margin-bottom: 2rem;
 }
 
 button {
@@ -56,6 +55,7 @@ button:hover {
 .container {
   width: 100%;
   max-width: var(--max-width);
+  margin: 0 auto;
   text-align: center;
 }
 
@@ -78,9 +78,13 @@ button:hover {
 @media (max-width: 480px) {
   body {
     padding: 1rem;
+    position: relative;
   }
   .controls {
-    justify-content: center;
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    justify-content: flex-start;
     flex-wrap: wrap;
   }
   button {

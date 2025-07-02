@@ -1,11 +1,11 @@
 const content = {
   en: {
     bio: "Physics student at ETH Zurich.",
-    contact: "Contact me:"
+
   },
   de: {
     bio: "Physikstudent an der ETH Zürich.",
-    contact: "Kontakt:"
+  
   }
 };
 
