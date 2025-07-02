@@ -1,4 +1,3 @@
-
 const content = {
   en: {
     bio: "Physics student at ETH Zurich.",
@@ -13,31 +12,18 @@ const content = {
 };
 
 function updateLangToggleButton(lang) {
-
   document.getElementById("lang-toggle").textContent =
     lang === "en" ? "Deutsch" : "English";
 }
 
 function setLang(lang) {
   const data = content[lang];
-
- 
   document.getElementById("bio").textContent = data.bio;
-
- 
   const emailLink = document.getElementById("email-link");
-
-  
   emailLink.textContent = data.emailLabel;
-
-
   emailLink.href = "mailto:vitus@leibni.tz";
-
-  
   localStorage.setItem("language", lang);
 }
-
-
 
 function toggleLanguage() {
   const current = localStorage.getItem("language") || "en";
@@ -48,11 +34,18 @@ function toggleLanguage() {
 
 document.addEventListener("DOMContentLoaded", () => {
   // 1) mount click handler
-  document.getElementById("lang-toggle")
-    .addEventListener("click", toggleLanguage);
+  const toggleBtn = document.getElementById("lang-toggle");
+  toggleBtn.addEventListener("click", toggleLanguage);
 
   // 2) initialize from localStorage (or default to English)
   const saved = localStorage.getItem("language") || "en";
   setLang(saved);
   updateLangToggleButton(saved);
+
+  // ─── BLUR ON TAP ─────────────────────────────────────────────────────────────
+  // ensure the toggle button never sticks in its tapped or focused state
+  [toggleBtn].forEach(btn => {
+    btn.addEventListener('click', () => btn.blur());
+    btn.addEventListener('touchend', () => btn.blur());
+  });
 });

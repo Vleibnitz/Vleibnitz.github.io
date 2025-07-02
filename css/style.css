@@ -35,8 +35,8 @@ body {
   top: 1rem;
   left: 1rem;
   right: 1rem;
-  flex-wrap: wrap;
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
@@ -47,12 +47,28 @@ button {
   padding: 0.4rem 0.8rem;
   border-radius: 4px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-button:hover {
-  background: var(--accent);
-  color: #fff;
+@media (hover: hover) and (pointer: fine) {
+  button:hover {
+    background: var(--accent);
+    color: #fff;
+  }
+}
+
+
+button:focus {
+  outline: none;
+}
+
+/* ensure buttons always revert after tap */
+button:active {
+  background: none !important;
+  color: var(--text-color) !important;
 }
 
 .container {
@@ -77,23 +93,7 @@ button:hover {
   text-decoration: underline;
 }
 
-/* Mobile adjustments */
-@media (max-width: 480px) {
-  /* 1) Give the page its original 6rem top-padding back, but keep 1rem sides */
-  body {
-    /* shorthand: top right/left bottom */
-    padding: 6rem 1rem 1rem;
-    position: relative;
-  }
 
-  /* 2) Prevent the toggle from flex-growing to 100% */
-  .controls button {
-    /* no flex-grow, but still wrap/shrink if you have multiple buttons */
-    flex: 0 1 auto;
-    /* you can also set a max-width if you prefer e.g. max-width: 45%; */
-    margin-bottom: 0.5rem;  /* keep your existing spacing */
-  }
-}
 
 @media (prefers-color-scheme: dark) {
   :root {
