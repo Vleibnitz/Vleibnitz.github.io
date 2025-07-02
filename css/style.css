@@ -79,20 +79,19 @@ button:hover {
 
 /* Mobile adjustments */
 @media (max-width: 480px) {
+  /* 1) Give the page its original 6rem top-padding back, but keep 1rem sides */
   body {
-    padding: 1rem;
+    /* shorthand: top right/left bottom */
+    padding: 6rem 1rem 1rem;
     position: relative;
   }
-  .controls {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-  }
-  button {
-    flex: 1 1 45%;
-    margin-bottom: 0.5rem;
+
+  /* 2) Prevent the toggle from flex-growing to 100% */
+  .controls button {
+    /* no flex-grow, but still wrap/shrink if you have multiple buttons */
+    flex: 0 1 auto;
+    /* you can also set a max-width if you prefer e.g. max-width: 45%; */
+    margin-bottom: 0.5rem;  /* keep your existing spacing */
   }
 }
 
