@@ -59,6 +59,12 @@ button {
     color: #fff;
   }
 }
+@media (hover: none) {
+  button:hover {
+    background: none !important;
+    color: var(--text-color) !important;
+  }
+}
 
 
 button:focus {
