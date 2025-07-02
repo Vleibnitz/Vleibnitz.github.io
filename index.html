@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Test Site by Vitus</title>
-  <style>
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      font-family: sans-serif;
-      background-color: #f5f5f5;
-    }
-    h1 {
-      color: #333;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vitus Leibnitz</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <h1>This is a test site by Vitus</h1>
+  <div class="controls">
+    <button class="lang-switch" data-lang="en">English</button>
+    <button class="lang-switch" data-lang="de">Deutsch</button>
+    <button class="theme-switch">Toggle Dark Mode</button>
+  </div>
+
+  <main class="container">
+    <h1 id="name">Vitus Leibnitz</h1>
+    <p id="bio"></p>
+    <p><strong id="contactLabel"></strong></p>
+    <ul class="links">
+      <li><a href="https://www.linkedin.com/in/vitusleibnitz" target="_blank">LinkedIn</a></li>
+    </ul>
+  </main>
+
+  <script src="js/script.js" defer></script>
 </body>
 </html>

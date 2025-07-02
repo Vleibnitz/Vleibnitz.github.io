@@ -1,0 +1,90 @@
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --accent: #0066cc;
+  --max-width: 600px;
+}
+
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #f0f0f0;
+  --accent: #3399ff;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.controls {
+  width: 100%;
+  max-width: var(--max-width);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+button {
+  background: none;
+  border: 1px solid var(--text-color);
+  color: var(--text-color);
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  text-align: center;
+}
+
+.links {
+  list-style: none;
+  margin-top: 1rem;
+}
+
+.links a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  body {
+    padding: 1rem;
+  }
+  .controls {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  button {
+    flex: 1 1 45%;
+    margin-bottom: 0.5rem;
+  }
+}
