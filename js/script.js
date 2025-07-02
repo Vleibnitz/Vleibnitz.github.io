@@ -1,3 +1,5 @@
+
+
 const content = {
   en: {
     bio: "Physics student at ETH Zurich.",
@@ -9,9 +11,13 @@ const content = {
   }
 };
 
+function updateLangToggleButton(lang) {
+  const btn = document.getElementById("lang-toggle");
+  btn.textContent = lang === "en" ? "Deutsch" : "English";
+}
+
 function setLang(lang) {
   document.getElementById("bio").textContent = content[lang].bio;
-  document.getElementById("contactLabel").textContent = content[lang].contact;
   localStorage.setItem("language", lang);
 }
 
@@ -24,17 +30,28 @@ function toggleTheme() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // wire up language buttons
-  document.querySelectorAll(".lang-switch").forEach(btn => {
-    btn.addEventListener("click", () => setLang(btn.dataset.lang));
-  });
-  // wire up theme toggle
-  document.querySelector(".theme-switch")
-          .addEventListener("click", toggleTheme);
+  // Automatic dark-mode detection
+  const storedTheme = localStorage.getItem("theme");
+  if (storedTheme) {
+    document.documentElement.setAttribute("data-theme", storedTheme);
+  } else {
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    document.documentElement.setAttribute("data-theme", prefersDark ? "dark" : "light");
+  }
 
-  // load saved prefs
+  const langBtn = document.getElementById("lang-toggle");
+  if (langBtn) {
+    langBtn.addEventListener("click", () => {
+      const currentLang = localStorage.getItem("language") || "en";
+      const nextLang = currentLang === "en" ? "de" : "en";
+      setLang(nextLang);
+      updateLangToggleButton(nextLang);
+    });
+  }
+
   const savedLang = localStorage.getItem("language") || "en";
-  const savedTheme = localStorage.getItem("theme") || "light";
   setLang(savedLang);
-  document.documentElement.setAttribute("data-theme", savedTheme);
+  if (document.getElementById("lang-toggle")) {
+    updateLangToggleButton(savedLang);
+  }
 });

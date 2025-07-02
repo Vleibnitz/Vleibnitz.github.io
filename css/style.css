@@ -1,14 +1,17 @@
 :root {
-  --bg-color: #ffffff;
-  --text-color: #000000;
-  --accent: #0066cc;
-  --max-width: 600px;
+  color-scheme: light dark;
+  --bg-color:  #ffffff;
+  --text-color: #1a1a1a;
+  --accent:     #0066cc;
+  --max-width:  600px;
 }
 
-[data-theme="dark"] {
-  --bg-color: #121212;
+/* Dark-mode overrides */
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg-color:  #121212;
   --text-color: #f0f0f0;
-  --accent: #3399ff;
+  --accent:     #3399ff;
 }
 
 * {
@@ -90,5 +93,13 @@ button:hover {
   button {
     flex: 1 1 45%;
     margin-bottom: 0.5rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color:   #121212;
+    --text-color: #f0f0f0;
+    --accent:     #3399ff;
   }
 }
