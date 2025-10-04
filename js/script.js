@@ -11,12 +11,12 @@
 
 const content = {
   en: {
-    bio:        "Physics student at ETH Zurich.",
+    bio:        "Student at ETH Zurich.",
     emailLabel: "Email",
     email:      "vitus@leibni.tz"
   },
   de: {
-    bio:        "Physikstudent an der ETH Zürich.",
+    bio:        "Stundent an der ETH Zürich.",
     emailLabel: "E-Mail",
     email:      "vitus@leibni.tz"
   }
