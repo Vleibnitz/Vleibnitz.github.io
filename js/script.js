@@ -16,7 +16,7 @@ const content = {
     email:      "vitus@leibni.tz"
   },
   de: {
-    bio:        "Stundent an der ETH Zürich.",
+    bio:        "Student an der ETH Zürich.",
     emailLabel: "E-Mail",
     email:      "vitus@leibni.tz"
   }
