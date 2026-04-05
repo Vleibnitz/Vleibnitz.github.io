@@ -1,0 +1,12 @@
+name = "my-site-worker"
+main = "worker/index.js"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "files-db"
+database_id = "5afcdfe2-5c06-4e81-941e-e0a5d609e975"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "files-bucket"
