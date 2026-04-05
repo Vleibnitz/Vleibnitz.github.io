@@ -22,7 +22,7 @@
   </a>
 
   <!-- Existing Upload/Mode button -->
-  <button class=form-button id="mode-toggle">Upload Mode</button>
+  <button class=form-button id="mode-toggle">Editing Mode</button>
 </div>
 
   <main class="container">
@@ -52,31 +52,36 @@
     </div>
 
     <!-- UPLOAD SECTION -->
-    <div id="upload-section" class="hidden">
-      <div id="upload-auth" class="password-screen">
-        <p>Enter upload password</p>
-        <input type="password" id="upload-password" placeholder="Password" />
-        <button class="form-button" style="position:static" onclick="authUpload()">Unlock</button>
-        <p class="error hidden" id="upload-error">Wrong password</p>
-      </div>
+<div id="edit-section" class="hidden">
+  <div id="edit-auth" class="password-screen">
+    <p>Enter edit password</p>
+    <input type="password" id="edit-password" placeholder="Password" />
+    <button class="form-button" style="position:static" onclick="authEdit()">Unlock</button>
+    <p class="error hidden" id="edit-error">Wrong password</p>
+  </div>
 
-      <div id="upload-content" class="hidden">
-        <h2>Upload File</h2>
-        <div class="upload-form">
-          <input type="file" id="file-input" />
-          <input type="text" id="upload-description" placeholder="Description (optional)" />
-          <select id="upload-category">
-            <option value="misc">Misc</option>
-            <option value="notes">Notes</option>
-            <option value="projects">Projects</option>
-            <option value="pdfs">PDFs</option>
-          </select>
-          <button class=form-button onclick="uploadFile()">Upload</button>
-          <p id="upload-status"></p>
-        </div>
-      </div>
+  <div id="edit-content" class="hidden">
+    <h2>Upload New File</h2>
+    <div class="upload-form">
+      <input type="file" id="file-input" />
+      <input type="text" id="upload-description" placeholder="Description (optional)" />
+      <select id="upload-category">
+        <option value="misc">Misc</option>
+        <option value="notes">Notes</option>
+        <option value="projects">Projects</option>
+        <option value="pdfs">PDFs</option>
+      </select>
+      <button class="form-button" onclick="uploadFile()">Upload</button>
+      <p id="upload-status"></p>
     </div>
-  </main>
+
+    <h2 style="margin-top: 2rem;">Manage Files</h2>
+    <div class="search-bar">
+      <input type="text" id="edit-search" placeholder="Search files to delete..." oninput="renderEditFiles()" />
+    </div>
+    <div id="edit-file-list" class="file-list"></div>
+  </div>
+</div>
 
   
 </body>

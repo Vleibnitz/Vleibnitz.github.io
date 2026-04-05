@@ -197,15 +197,22 @@ html:not(.touch) .controls button:hover {
     text-align: left;
   }
 
+
+
   .file-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;       /* Take up remaining space */
+  min-width: 0;  /* Crucial: allows the container to shrink below content size */
+}
 
   .file-name {
-    font-weight: bold;
-  }
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
   .file-meta {
     font-size: 0.8rem;

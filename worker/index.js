@@ -1,6 +1,6 @@
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
@@ -13,6 +13,9 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
+    if (path.startsWith('/api/delete/') && request.method === 'DELETE') {
+      return handleDelete(request, env, path);
+    }
     if (path === '/api/auth' && request.method === 'POST') {
       return handleAuth(request, env);
     }
@@ -52,11 +55,17 @@ async function handleAuth(request, env) {
   return json({ token });
 }
 
+
 // ─── LIST FILES ───────────────────────────────────────────────────────────────
 
 async function handleList(request, env) {
-  const auth = await verifyToken(request, 'download', env.TOKEN_SECRET);
-  if (!auth) return json({ error: 'Unauthorized' }, 401);
+  // Check if the user has EITHER a valid download token OR a valid upload token
+  const hasDownloadToken = await verifyToken(request, 'download', env.TOKEN_SECRET);
+  const hasUploadToken = await verifyToken(request, 'upload', env.TOKEN_SECRET);
+
+  if (!hasDownloadToken && !hasUploadToken) {
+    return json({ error: 'Unauthorized' }, 401);
+  }
 
   const { results } = await env.DB.prepare(
     'SELECT * FROM files ORDER BY uploaded_at DESC'
@@ -118,6 +127,36 @@ async function handleDownload(request, env, path) {
     }
   });
 }
+
+// ─── DELETE ───────────────────────────────────────────────────────────────────
+
+async function handleDelete(request, env, path) {
+  // Require the upload (admin) password to delete files
+  const auth = await verifyToken(request, 'upload', env.TOKEN_SECRET);
+  if (!auth) return json({ error: 'Unauthorized' }, 401);
+
+  const id = path.replace('/api/delete/', '');
+
+  // 1. Get the file details from the database so we know the filename
+  const row = await env.DB.prepare(
+    'SELECT * FROM files WHERE id = ?'
+  ).bind(id).first();
+
+  if (!row) return json({ error: 'File not found' }, 404);
+
+  // 2. Delete the actual file from the R2 Bucket
+  const key = id + '/' + row.name;
+  await env.BUCKET.delete(key);
+
+  // 3. Delete the record from the D1 Database
+  await env.DB.prepare(
+    'DELETE FROM files WHERE id = ?'
+  ).bind(id).run();
+
+  return json({ success: true });
+}
+
+
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 

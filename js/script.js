@@ -65,13 +65,21 @@ let mode = 'download';
   }
 })();
 
+let editToken = null; // Replaces uploadToken
+
 // ─── MODE TOGGLE ────────────────────────────────────────────────────────
 document.getElementById('mode-toggle').addEventListener('click', () => {
-  mode = mode === 'download' ? 'upload' : 'download';
+  mode = mode === 'download' ? 'edit' : 'download';
   document.getElementById('mode-toggle').textContent =
-    mode === 'download' ? 'Upload Mode' : 'Download Mode';
+    mode === 'download' ? 'Edit Mode' : 'Download Mode';
+  
   document.getElementById('download-section').classList.toggle('hidden', mode !== 'download');
-  document.getElementById('upload-section').classList.toggle('hidden', mode !== 'upload');
+  document.getElementById('edit-section').classList.toggle('hidden', mode !== 'edit');
+
+  // Load files automatically if switching to edit mode and already authenticated
+  if (mode === 'edit' && editToken) {
+    loadFilesForEdit();
+  }
 });
 
 // ─── AUTH ────────────────────────────────────────────────────────────────
@@ -93,20 +101,86 @@ async function authDownload() {
   }
 }
 
-async function authUpload() {
-  const password = document.getElementById('upload-password').value;
+async function authEdit() {
+  const password = document.getElementById('edit-password').value;
   const res = await fetch(`${WORKER_URL}/api/auth`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ password, type: 'upload' })
+    // We keep type 'upload' here so we don't break your existing Cloudflare worker logic
+    body: JSON.stringify({ password, type: 'upload' }) 
   });
   const data = await res.json();
   if (data.token) {
-    uploadToken = data.token;
-    document.getElementById('upload-auth').classList.add('hidden');
-    document.getElementById('upload-content').classList.remove('hidden');
+    editToken = data.token;
+    document.getElementById('edit-auth').classList.add('hidden');
+    document.getElementById('edit-content').classList.remove('hidden');
+    loadFilesForEdit(); // Load files immediately so user can delete them
   } else {
-    document.getElementById('upload-error').classList.remove('hidden');
+    document.getElementById('edit-error').classList.remove('hidden');
+  }
+}
+
+// ─── EDIT MODE FILE HANDLING ─────────────────────────────────────────────
+async function loadFilesForEdit() {
+  const res = await fetch(`${WORKER_URL}/api/files`, {
+    headers: { 'Authorization': `Bearer ${editToken}` }
+  });
+  const data = await res.json();
+  
+  // Safety check: if the worker rejects us, show the error!
+  if (data.error) {
+    document.getElementById('edit-file-list').innerHTML = `<p style="color:#cc3300">Backend Error: ${data.error}. (Did the worker deploy?)</p>`;
+    allFiles = [];
+    return;
+  }
+  
+  allFiles = data;
+  renderEditFiles();
+}
+
+function renderEditFiles() {
+  const query = document.getElementById('edit-search').value.toLowerCase();
+  const filtered = allFiles.filter(f =>
+    f.name.toLowerCase().includes(query) ||
+    (f.description || '').toLowerCase().includes(query) ||
+    (f.category || '').toLowerCase().includes(query)
+  );
+
+  const list = document.getElementById('edit-file-list');
+  if (filtered.length === 0) {
+    list.innerHTML = '<p>No files found.</p>';
+    return;
+  }
+
+  // Render file list with red Delete buttons
+  list.innerHTML = filtered.map(f => `
+    <div class="file-card">
+      <div class="file-info">
+        <span class="file-name">${f.name}</span>
+        ${f.description ? `<span class="file-description">${f.description}</span>` : ''}
+        <span class="file-meta">${f.category} · ${formatDate(f.uploaded_at)} · ${formatSize(f.size)}</span>
+      </div>
+      <button class="form-button" style="color: #cc3300; border-color: #cc3300;" onclick="deleteFile('${f.id}')">Delete</button>
+    </div>
+  `).join('');
+}
+
+async function deleteFile(id) {
+  if (!confirm("Are you sure you want to delete this file? This cannot be undone.")) return;
+
+  const res = await fetch(`${WORKER_URL}/api/delete/${id}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${editToken}` }
+  });
+
+  const data = await res.json();
+  if (data.success) {
+    // Remove the file from our local array and re-render the lists
+    allFiles = allFiles.filter(f => f.id !== id);
+    renderEditFiles();
+    if (document.getElementById('search')) renderFiles(); // Keep download list in sync
+  } else {
+    alert('Failed to delete file.');
   }
 }
 
@@ -138,7 +212,7 @@ function renderFiles() {
     <div class="file-card">
       <div class="file-info" style="flex-direction: row; align-items: center; gap: 1rem;">
         <input type="checkbox" class="file-checkbox" data-id="${f.id}" data-name="${f.name}" style="transform: scale(1.2); cursor: pointer;">
-        <div style="display: flex; flex-direction: column;">
+        <div style="display: flex; flex-direction: column; min-width: 0; overflow: hidden;">
           <span class="file-name">${f.name}</span>
           ${f.description ? `<span class="file-description">${f.description}</span>` : ''}
           <span class="file-meta">${f.category} · ${formatDate(f.uploaded_at)} · ${formatSize(f.size)}</span>
@@ -163,6 +237,7 @@ async function downloadFile(id, name) {
 }
 
 // ─── UPLOAD FILE ─────────────────────────────────────────────────────────
+
 async function uploadFile() {
   const file = document.getElementById('file-input').files[0];
   if (!file) return;
@@ -176,15 +251,20 @@ async function uploadFile() {
 
   const res = await fetch(`${WORKER_URL}/api/upload`, {
     method: 'POST',
-    headers: { 'Authorization': `Bearer ${uploadToken}` },
+    // We must use editToken here now!
+    headers: { 'Authorization': `Bearer ${editToken}` },
     body: formData
   });
 
   const data = await res.json();
   document.getElementById('upload-status').textContent =
     data.success ? 'Uploaded successfully.' : 'Upload failed.';
+    
+  // Automatically refresh the list so the new file appears to be deleted/viewed
+  if (data.success) {
+    loadFilesForEdit(); 
+  }
 }
-
 // ─── HELPERS ─────────────────────────────────────────────────────────────
 function formatDate(iso) {
   return new Date(iso).toLocaleDateString();
